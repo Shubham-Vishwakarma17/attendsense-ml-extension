@@ -1,0 +1,16 @@
+{
+  "name": "attendsense-ml-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Consent-based observable participation telemetry for Google Meet.",
+  "scripts": {
+    "test": "node --test",
+    "check:syntax": "node --check extension/background/service-worker.js && node --check extension/content/activity-monitor.js && node --check extension/lib/session.js && node --check extension/popup/popup.js",
+    "check:manifest": "node tests/validate-manifest.js",
+    "check": "npm run test && npm run check:syntax && npm run check:manifest"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

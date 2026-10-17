@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "AttendSense",
+  "version": "0.1.0",
+  "description": "Consent-based estimates of observable participation during Google Meet lectures.",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://meet.google.com/*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "AttendSense session controls"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://meet.google.com/*"
+      ],
+      "js": [
+        "content/activity-monitor.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

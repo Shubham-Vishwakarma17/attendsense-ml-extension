@@ -1,0 +1,38 @@
+# Operating system and editor files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# JavaScript tooling
+node_modules/
+coverage/
+npm-debug.log*
+
+# Python tooling (reserved for later checkpoints)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Private/local datasets; retain the directory placeholder
+data/*
+!data/.gitkeep
+*.csv
+*.tsv
+*.parquet
+*.jsonl
+
+# Generated ML models and experiment artifacts
+*.pkl
+*.pickle
+*.joblib
+*.onnx
+models/
+artifacts/
+runs/
+
+# Packaged extension output
+dist/
+*.zip

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AttendSense</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">OBSERVABLE PARTICIPATION</p>
+        <h1>AttendSense</h1>
+        <p class="boundary">Measures browser activity only—not thoughts, learning, or attention.</p>
+      </header>
+
+      <section class="status-card" aria-labelledby="session-heading">
+        <div class="status-row">
+          <h2 id="session-heading">Lecture session</h2>
+          <span id="status" class="status" aria-live="polite">Not started</span>
+        </div>
+        <dl>
+          <div><dt>Duration</dt><dd id="duration">00:00</dd></div>
+          <div><dt>Samples</dt><dd id="sample-count">0</dd></div>
+          <div><dt>Tab visible</dt><dd id="tab-visible">0%</dd></div>
+          <div><dt>Window focused</dt><dd id="window-focused">0%</dd></div>
+          <div><dt>Recent interaction</dt><dd id="interaction">0%</dd></div>
+        </dl>
+      </section>
+
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+      <div class="controls">
+        <button id="start" type="button">Start Lecture Session</button>
+        <button id="stop" class="secondary" type="button">Stop Session</button>
+      </div>
+      <p class="consent">Starting records one local activity sample every 10 seconds. No camera, microphone, photos, or video are used.</p>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

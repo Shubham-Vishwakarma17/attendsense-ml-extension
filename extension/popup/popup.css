@@ -1,0 +1,30 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #172033;
+  background: #f6f8fc;
+}
+
+body { margin: 0; min-width: 360px; }
+main { padding: 20px; }
+.eyebrow { margin: 0 0 4px; color: #3558b8; font-size: 11px; font-weight: 750; letter-spacing: .08em; }
+h1 { margin: 0; font-size: 25px; }
+.boundary, .consent { color: #526078; line-height: 1.45; }
+.boundary { margin: 6px 0 18px; }
+.status-card { padding: 15px; border: 1px solid #d8dfec; border-radius: 12px; background: #fff; box-shadow: 0 5px 18px rgba(25, 44, 84, .06); }
+.status-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+h2 { margin: 0; font-size: 16px; }
+.status { padding: 4px 8px; border-radius: 999px; background: #e8edf7; font-size: 12px; font-weight: 700; }
+.status.active { color: #075c42; background: #d9f6ea; }
+dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 0; }
+dl div { min-width: 0; }
+dt { color: #657188; font-size: 12px; }
+dd { margin: 2px 0 0; font-size: 18px; font-weight: 700; }
+.message { min-height: 20px; margin: 10px 0 4px; color: #a13b28; font-size: 13px; }
+.controls { display: grid; gap: 8px; }
+button { min-height: 42px; border: 0; border-radius: 9px; color: #fff; background: #3158cc; font: inherit; font-weight: 700; cursor: pointer; }
+button.secondary { color: #27334a; background: #e5eaf3; }
+button:hover:not(:disabled) { filter: brightness(.95); }
+button:focus-visible { outline: 3px solid #f5ad36; outline-offset: 2px; }
+button:disabled { cursor: not-allowed; opacity: .5; }
+.consent { margin: 12px 2px 0; font-size: 12px; }
