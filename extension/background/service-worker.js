@@ -5,6 +5,7 @@ import {
   createSession,
   stopSession
 } from "../lib/session.js";
+import { labelSession } from "../lib/dataset.js";
 
 const MEET_URL = /^https:\/\/meet\.google\.com\//;
 let mutationQueue = Promise.resolve();
@@ -128,6 +129,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const next = addSample(session, message.sample);
         await saveSession(next);
         return { ok: true };
+      });
+      sendResponse(response);
+      return;
+    }
+
+    if (message.type === "SET_PARTICIPATION_LABEL") {
+      const response = await enqueueMutation(async () => {
+        const session = await loadSession();
+        let next;
+        try {
+          next = labelSession(session, message.label);
+        } catch (error) {
+          return { ok: false, error: error.message, session };
+        }
+        await saveSession(next);
+        return { ok: true, session: next };
       });
       sendResponse(response);
       return;

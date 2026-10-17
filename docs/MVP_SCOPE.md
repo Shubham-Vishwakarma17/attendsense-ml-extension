@@ -33,3 +33,7 @@ Tab visibility, window focus, and page interaction are coarse observable browser
 ## Later checkpoints
 
 Any camera-derived feature requires a separate explicit consent design, an on-device processing assessment, no raw-frame retention, and technical validation. ML work must use documented labels and uncertainty handling and must preserve the scientific boundary above.
+
+## Checkpoint 2A research data workflow
+
+After a stopped session has at least one sample, the participant may assign one session-level label: `active_participation`, `passive_listening`, or `away_from_lecture`. The label is participant-provided ground truth, not an AttendSense prediction. Labelled sessions can be downloaded locally as privacy-safe CSV or JSON files. No identity, meeting metadata, media, network upload, model training, or inference is included. See [DATASET_PROTOCOL.md](DATASET_PROTOCOL.md).

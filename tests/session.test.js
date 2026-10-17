@@ -14,7 +14,7 @@ test("creates one versioned active empty session", () => {
   assert.deepEqual(createSession({ id: "s1", startedAt: 1000, tabId: 4 }), {
     schemaVersion: SESSION_SCHEMA_VERSION,
     id: "s1", active: true, startedAt: 1000, stoppedAt: null,
-    stopReason: null, tabId: 4, samples: []
+    stopReason: null, participationLabel: null, tabId: 4, samples: []
   });
 });
 

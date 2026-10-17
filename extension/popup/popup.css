@@ -11,7 +11,13 @@ main { padding: 20px; }
 h1 { margin: 0; font-size: 25px; }
 .boundary, .consent { color: #526078; line-height: 1.45; }
 .boundary { margin: 6px 0 18px; }
-.status-card { padding: 15px; border: 1px solid #d8dfec; border-radius: 12px; background: #fff; box-shadow: 0 5px 18px rgba(25, 44, 84, .06); }
+.status-card, .label-card { padding: 15px; border: 1px solid #d8dfec; border-radius: 12px; background: #fff; box-shadow: 0 5px 18px rgba(25, 44, 84, .06); }
+.label-card { display: grid; gap: 9px; margin-top: 12px; }
+.label-card p { margin: 0; color: #526078; font-size: 12px; line-height: 1.45; }
+.label-card label { font-size: 12px; font-weight: 700; }
+.label-card select { min-height: 39px; border: 1px solid #aeb8ca; border-radius: 8px; padding: 0 9px; color: inherit; background: #fff; font: inherit; }
+.label-card select:focus-visible { outline: 3px solid #f5ad36; outline-offset: 2px; }
+.export-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .status-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 h2 { margin: 0; font-size: 16px; }
 .status { padding: 4px 8px; border-radius: 999px; background: #e8edf7; font-size: 12px; font-weight: 700; }

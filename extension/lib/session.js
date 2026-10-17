@@ -26,6 +26,7 @@ export function createSession({ id, startedAt, tabId }) {
     startedAt,
     stoppedAt: null,
     stopReason: null,
+    participationLabel: null,
     tabId,
     samples: []
   };

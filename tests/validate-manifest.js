@@ -20,7 +20,8 @@ const referencedFiles = [
   ...manifest.content_scripts.flatMap((script) => script.js),
   "popup/popup.css",
   "popup/popup.js",
-  "lib/session.js"
+  "lib/session.js",
+  "lib/dataset.js"
 ];
 
 await Promise.all(referencedFiles.map((file) => access(resolve(root, "extension", file))));

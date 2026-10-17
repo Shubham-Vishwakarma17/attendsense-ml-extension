@@ -21,6 +21,10 @@ Start first performs a readiness handshake with the Meet content script. If an e
 
 Session mutations are serialized in the service worker. Stored sessions have schema version `1` and retain at most 2,160 samples, preserving the newest samples. At the nominal ten-second interval, this supports approximately six hours before older samples roll off.
 
+## Checkpoint 2A: research labels and local export
+
+A stopped session with at least one sample can be assigned exactly one participant-provided label: `active_participation`, `passive_listening`, or `away_from_lecture`. This is ground truth selected by the participant, not a prediction. A labelled session can be downloaded locally as privacy-safe CSV or JSON; exports contain no identity or meeting metadata and are never uploaded. See [docs/DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) for label definitions and the controlled collection protocol.
+
 ## Structure
 
 ```text

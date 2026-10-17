@@ -28,6 +28,23 @@
         </dl>
       </section>
 
+      <section class="label-card" aria-labelledby="label-heading">
+        <h2 id="label-heading">Research label</h2>
+        <p id="label-help">Research label: select what you actually did during this session. This label is provided by the participant and is not predicted by AttendSense.</p>
+        <label for="participation-label">Session-level label</label>
+        <select id="participation-label" aria-describedby="label-help">
+          <option value="">Select a label</option>
+          <option value="active_participation">Active participation</option>
+          <option value="passive_listening">Passive listening</option>
+          <option value="away_from_lecture">Away from lecture</option>
+        </select>
+        <button id="save-label" class="secondary" type="button">Save Research Label</button>
+        <div class="export-controls" aria-label="Local dataset export">
+          <button id="export-csv" class="secondary" type="button">Export CSV</button>
+          <button id="export-json" class="secondary" type="button">Export JSON</button>
+        </div>
+      </section>
+
       <p id="message" class="message" role="status" aria-live="polite"></p>
       <div class="controls">
         <button id="start" type="button">Start Lecture Session</button>
