@@ -24,11 +24,19 @@ The participant selects what they actually did. AttendSense does not infer or pr
 6. Collect balanced numbers and varied examples of all three labels to reduce class imbalance and device-specific bias.
 7. Review exported rows for technical validity before later preprocessing. Do not relabel examples merely to fit expected signals.
 
+At least three independent sessions per label are required for the grouped evaluation pipeline. Five or more sessions per label are recommended; more diverse sessions provide a more credible evaluation.
+
 ## Privacy and file handling
 
 Do not collect or add participant names, email addresses, Google Meet codes, meeting URLs, tab titles, browsing history, audio, video, photos, or camera images. Checkpoint 2A exports only allowlisted session timing, observable browser signals, and the participant-provided label. Export uses a local browser download and sends nothing to a server.
 
 Dataset files must remain private and untracked. The repository ignores CSV, TSV, Parquet, JSONL, and the contents of `data/`. Store JSON exports under `data/` so they are also ignored; do not commit raw research exports.
+
+## Synthetic demonstration data
+
+`ml/generate_demo_data.py` may be used to validate the preparation, training, artifact, and prediction software before real sessions are available. It generates clearly identified `demo-` sessions with deterministic, noisy behavior patterns and writes explicit provenance metadata. Preparation and training of these files must use `--dataset-kind synthetic_demo`.
+
+Synthetic demo data is not participant data. Synthetic cross-validation metrics are not evidence of real-world accuracy and must never be mixed with or reported as results from genuine collection. Real participant evaluation remains future work until balanced, consent-based exports have been collected.
 
 ## Limitations and label noise
 
@@ -38,4 +46,5 @@ Dataset files must remain private and untracked. The repository ignores CSV, TSV
 - Opening the popup can affect window-focus and pointer-interaction signals.
 - Timer throttling can create irregular sample spacing.
 - Only the newest 2,160 samples are retained, approximately six hours at the nominal ten-second interval.
-- Later model development must document class balance, collection conditions, preprocessing, uncertainty, and evaluation limitations.
+- Checkpoint 2B prevents samples from the same session appearing in both training and validation, but small grouped datasets can still produce unstable or non-generalizable results.
+- Real training accuracy and confusion matrices are unavailable until genuine exported sessions are collected.

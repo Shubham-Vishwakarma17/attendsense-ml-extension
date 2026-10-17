@@ -25,6 +25,12 @@ Session mutations are serialized in the service worker. Stored sessions have sch
 
 A stopped session with at least one sample can be assigned exactly one participant-provided label: `active_participation`, `passive_listening`, or `away_from_lecture`. This is ground truth selected by the participant, not a prediction. A labelled session can be downloaded locally as privacy-safe CSV or JSON; exports contain no identity or meeting metadata and are never uploaded. See [docs/DATASET_PROTOCOL.md](docs/DATASET_PROTOCOL.md) for label definitions and the controlled collection protocol.
 
+## Checkpoint 2B: offline ML pipeline
+
+The dependency-pinned Python pipeline in [`ml/`](ml/) validates private CSV exports, prepares a deterministic combined dataset, compares Logistic Regression, Decision Tree, and Random Forest with leakage-safe session-grouped cross-validation, and supports offline prediction. It uses only tab visibility, window focus, idle seconds, and recent interaction as predictive features. At least three independent sessions per label are required; five or more per label are recommended. No real performance result is claimed until genuine exported sessions are collected. See [ml/README.md](ml/README.md) for setup and commands.
+
+For software demonstration before real collection, `ml/generate_demo_data.py` creates explicitly synthetic, identity-free exports. Demo commands must use `--dataset-kind synthetic_demo`, which propagates a warning into summaries, metrics, model metadata, and prediction output. Synthetic metrics validate pipeline execution only and are not real-world accuracy evidence.
+
 ## Structure
 
 ```text
@@ -35,8 +41,8 @@ extension/  Chrome Manifest V3 extension
   popup/       Accessible controls and aggregate display
 tests/      Node built-in unit tests and manifest validation
 docs/       Scope and scientific/privacy boundary
-ml/         Reserved for later checkpoints
-data/       Reserved for local private data; contents are ignored
+ml/         Offline dataset preparation, grouped evaluation, training, and prediction
+data/       Private raw/processed datasets; generated contents are ignored
 ```
 
 ## Development and verification

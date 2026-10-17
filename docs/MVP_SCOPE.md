@@ -37,3 +37,9 @@ Any camera-derived feature requires a separate explicit consent design, an on-de
 ## Checkpoint 2A research data workflow
 
 After a stopped session has at least one sample, the participant may assign one session-level label: `active_participation`, `passive_listening`, or `away_from_lecture`. The label is participant-provided ground truth, not an AttendSense prediction. Labelled sessions can be downloaded locally as privacy-safe CSV or JSON files. No identity, meeting metadata, media, network upload, model training, or inference is included. See [DATASET_PROTOCOL.md](DATASET_PROTOCOL.md).
+
+## Checkpoint 2B offline ML workflow
+
+The local Python workflow validates private CSV exports, prepares a deterministic dataset, compares Logistic Regression, Decision Tree, and Random Forest with session-grouped cross-validation, and performs offline prediction. Predictive features are limited to tab visibility, window focus, idle seconds, and recent interaction. The result is an observable participation-state prediction, never proof of attention, understanding, learning, or attendance. Generated data and model artifacts remain private and ignored; no backend, network upload, browser inference, or dashboard is included.
+
+An explicitly synthetic demo generator is included only to exercise the complete software pipeline before real data collection. Synthetic provenance and warnings propagate through preparation summaries, model artifacts, metrics, and predictions. Synthetic metrics do not measure real-world model performance; genuine consent-based evaluation remains future work.

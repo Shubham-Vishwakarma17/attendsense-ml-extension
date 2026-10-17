@@ -19,6 +19,12 @@ venv/
 # Private/local datasets; retain the directory placeholder
 data/*
 !data/.gitkeep
+!data/raw/
+data/raw/*
+!data/raw/.gitkeep
+!data/processed/
+data/processed/*
+!data/processed/.gitkeep
 *.csv
 *.tsv
 *.parquet
@@ -32,6 +38,12 @@ data/*
 models/
 artifacts/
 runs/
+
+# Keep the ML artifact directory, but never generated contents
+!ml/artifacts/
+ml/artifacts/*
+!ml/artifacts/.gitkeep
+ml/demo_artifacts/
 
 # Packaged extension output
 dist/
