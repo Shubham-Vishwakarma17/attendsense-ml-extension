@@ -17,7 +17,9 @@ test("loads the login page and focuses email without submitting", async ({ page 
   expect(response, "root navigation should return an HTTP response").not.toBeNull();
   expect(response?.ok(), `HTTP status was ${response?.status()}`).toBe(true);
   await expect(page).toHaveURL(/\/login$/);
-  await expect(page).toHaveTitle("AttendSense Portal");
+  await expect(page).toHaveTitle("AttendSense | Participation Analytics");
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute("href", "/favicon.svg");
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /observable participation signals/i);
 
   const heading = page.getByRole("heading", { level: 1 });
   await expect(heading).toBeVisible();

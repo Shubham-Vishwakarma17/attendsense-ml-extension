@@ -6,7 +6,7 @@ import { LoginForm, RegistrationForm } from "../components/AuthForms";
 import { LectureForm } from "../components/LectureForm";
 import { DemoRepository } from "../services/demoRepository";
 import { RepositoryContext } from "../services/repository";
-import type { UserProfile } from "../types";
+import type { Lecture, Unsubscribe, UserProfile } from "../types";
 import { App } from "../App";
 
 function withRepository(component: React.ReactNode, repository = new DemoRepository()) {
@@ -47,17 +47,19 @@ describe("lecture creation", () => {
 });
 
 describe("student dashboard", () => {
-  it("shows assigned lecture, explicit extension boundary, demo banner, and model warning", async () => {
+  it("shows the assigned lecture, explicit extension boundary, and compact prediction method", async () => {
     const user = userEvent.setup();
     window.history.pushState({}, "", "/login");
     render(<App repository={new DemoRepository()} />);
-    await user.type(screen.getByLabelText("Email"), "student@demo.local");
+    await user.type(await screen.findByLabelText("Email"), "student@demo.local");
     await user.type(screen.getByLabelText("Password"), "password");
     await user.click(screen.getByRole("button", { name: "Log in" }));
     expect(await screen.findByRole("heading", { name: "Machine Learning Foundations" })).toBeInTheDocument();
     expect(screen.getByText(/website cannot start the extension automatically/i)).toBeInTheDocument();
     expect(screen.getByText(/DEMO MODE/)).toBeInTheDocument();
-    expect(screen.getAllByText(/not evidence of real-world accuracy/i).length).toBeGreaterThan(0);
+    expect(screen.queryByText("Synthetic demo model. Results demonstrate the software workflow and are not evidence of real-world accuracy.")).not.toBeInTheDocument();
+    await user.click(screen.getByText("How predictions work", { selector: "summary" }));
+    expect(screen.getByText(/does not measure thoughts, comprehension, learning, or guaranteed attendance/i)).toBeVisible();
   });
 
   it("shows an upload validation message for a non-JSON file", async () => {
@@ -82,15 +84,81 @@ describe("teacher results presentation", () => {
     await user.type(screen.getByLabelText("Password"), "password");
     await user.click(screen.getByRole("button", { name: "Log in" }));
     await user.click(await screen.findByRole("link", { name: "View results" }));
-    expect(screen.getAllByText("Submitted").length).toBeGreaterThan(0);
+    expect((await screen.findAllByText("Submitted")).length).toBeGreaterThan(0);
     expect(screen.getAllByText("Pending").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Passive listening").length).toBeGreaterThan(0);
     expect(screen.queryByText("passive_listening")).not.toBeInTheDocument();
     await user.click(screen.getAllByRole("link", { name: "Inspect submission" })[0]);
-    expect(screen.getByRole("heading", { name: "Class probabilities" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Class probabilities" })).toBeInTheDocument();
     expect(screen.getByLabelText(/Passive listening probability/)).toBeInTheDocument();
     expect(screen.getByText(/2 recorded states/)).toBeInTheDocument();
     expect(screen.getByText("Scientific boundary:")).toBeInTheDocument();
+  });
+});
+
+describe("lecture deletion dialog", () => {
+  async function renderTeacher() {
+    const repository = new DemoRepository();
+    await repository.login("teacher@demo.local");
+    window.history.pushState({}, "", "/teacher");
+    render(<App repository={repository} />);
+    await screen.findByRole("heading", { name: "Lecture overview" });
+  }
+
+  it("cancels safely and restores focus", async () => {
+    const user = userEvent.setup(); await renderTeacher();
+    const button = screen.getByRole("button", { name: "Delete" });
+    await user.click(button);
+    const dialog = screen.getByRole("dialog", { name: /Delete “Machine Learning Foundations”/ });
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveFocus();
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(dialog).not.toBeInTheDocument();
+    await waitFor(() => expect(button).toHaveFocus());
+  });
+
+  it("closes with Escape and restores focus", async () => {
+    const user = userEvent.setup(); await renderTeacher();
+    const button = screen.getByRole("button", { name: "Delete" });
+    await user.click(button);
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(button).toHaveFocus());
+  });
+
+  it("deletes only after confirmation in demo mode", async () => {
+    const user = userEvent.setup(); await renderTeacher();
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+    await user.click(screen.getByRole("button", { name: "Delete lecture" }));
+    await waitFor(() => expect(screen.queryByRole("heading", { name: "Machine Learning Foundations" })).not.toBeInTheDocument());
+    expect(screen.getByRole("heading", { name: "No lectures yet" })).toBeInTheDocument();
+  });
+});
+
+describe("dashboard states", () => {
+  it("announces the teacher loading state", async () => {
+    class LoadingRepository extends DemoRepository {
+      override subscribeTeacherLectures(_teacherId: string, _callback: (lectures: Lecture[]) => void): Unsubscribe { return () => undefined; }
+    }
+    const repository = new LoadingRepository(); await repository.login("teacher@demo.local");
+    window.history.pushState({}, "", "/teacher"); render(<App repository={repository} />);
+    expect(await screen.findByText("Loading your lectures…")).toHaveAttribute("role", "status");
+  });
+
+  it("shows a concise repository error without exposing internals", async () => {
+    class ErrorRepository extends DemoRepository {
+      override subscribeTeacherLectures(_teacherId: string, _callback: (lectures: Lecture[]) => void, onError?: () => void): Unsubscribe {
+        queueMicrotask(() => onError?.()); return () => undefined;
+      }
+    }
+    const repository = new ErrorRepository(); await repository.login("teacher@demo.local");
+    window.history.pushState({}, "", "/teacher"); render(<App repository={repository} />);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Could not load your lectures. Please try again.");
+  });
+
+  it("shows a useful empty state when the teacher has no lectures", async () => {
+    const repository = new DemoRepository(); await repository.login("teacher@demo.local"); await repository.deleteLecture("demo-lecture");
+    window.history.pushState({}, "", "/teacher"); render(<App repository={repository} />);
+    expect(await screen.findByRole("heading", { name: "No lectures yet" })).toBeInTheDocument();
   });
 });
 

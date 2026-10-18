@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { participationLabel, PredictionBadge, ProbabilityBars } from "./ParticipationDisplay";
 import type { Lecture, Submission } from "../types";
+import { countLabel } from "../lib/presentation";
+import { predictionDescription, PredictionMethodLink } from "./PredictionMethodInfo";
 
 export function SubmissionStatus({ submitted }: { submitted: boolean }) {
   return <span className={`submission-badge ${submitted ? "submitted" : "pending"}`}>{submitted ? "Submitted" : "Pending"}</span>;
@@ -14,7 +16,7 @@ function SessionTimeline({ submission }: { submission: Submission }) {
   const single = submission.samples.length === 1;
   const summary = `${submission.samples.length} recorded ${submission.samples.length === 1 ? "state" : "states"}. Tab visible ${submission.tabVisiblePercent.toFixed(1)} percent, window focused ${submission.windowFocusedPercent.toFixed(1)} percent, recent interaction ${submission.recentInteractionPercent.toFixed(1)} percent.`;
   return <section className="timeline-section" aria-labelledby="timeline-title">
-    <div className="section-heading"><div><p className="section-kicker">SESSION SIGNALS</p><h2 id="timeline-title" className="subsection-title">Activity timeline</h2></div><span>{submission.samples.length} {submission.samples.length === 1 ? "sample" : "samples"}</span></div>
+    <div className="section-heading"><div><p className="section-kicker">SESSION SIGNALS</p><h2 id="timeline-title" className="subsection-title">Activity timeline</h2></div><span>{countLabel(submission.samples.length, "sample")}</span></div>
     <p className="timeline-summary">{summary}</p>
     <div className="timeline-legend" aria-label="Timeline legend"><span><i className="signal-dot visible" />Tab visible</span><span><i className="signal-dot focused" />Window focused</span><span><i className="signal-dot interaction" />Recent interaction</span><span><i className="idle-key" />Idle seconds</span></div>
     <div className={`timeline ${single ? "single-sample" : ""}`} aria-label="Session sample timeline">
@@ -39,7 +41,7 @@ export function SubmissionDetailsContent({ submission }: { submission: Submissio
     <div className="metric-grid detail-metrics">{metrics.map(([label, value]) => <div className="metric-card" key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
     <div className="result-comparison">
       <section><p className="section-kicker">PARTICIPANT-PROVIDED LABEL</p><strong>{participationLabel(submission.participantProvidedLabel)}</strong><p className="supporting-text">Self-reported after the lecture session.</p></section>
-      <section><p className="section-kicker">MODEL PREDICTION</p><PredictionBadge label={submission.predictedParticipationLabel} /><p className="supporting-text">Synthetic demonstration model.</p></section>
+      <section><p className="section-kicker">MODEL PREDICTION</p><PredictionBadge label={submission.predictedParticipationLabel} /><p className="supporting-text">{predictionDescription} <PredictionMethodLink /></p></section>
     </div>
     <section className="probability-panel"><div className="section-heading"><div><p className="section-kicker">MODEL OUTPUT</p><h2 className="subsection-title">Class probabilities</h2></div></div><ProbabilityBars probabilities={submission.classProbabilities} /></section>
     <SessionTimeline submission={submission} />

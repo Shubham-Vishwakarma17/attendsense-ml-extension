@@ -54,9 +54,12 @@ test("teacher can validate, create, inspect, update, and delete isolated demo le
   await login(page, teacherEmail);
 
   const summary = page.getByRole("region", { name: "Lecture summary" });
-  await expect(summary).toContainText("Total lectures");
-  await expect(summary).toContainText("Submissions");
+  await expect(summary).toContainText("Lecture");
+  await expect(summary).toContainText("Submission");
   await expect(page.getByRole("heading", { name: seededLecture })).toBeVisible();
+  await expect(page.getByText("Synthetic demo model. Results demonstrate the software workflow and are not evidence of real-world accuracy.")).toHaveCount(0);
+  await page.locator("footer summary").click();
+  await expect(page.getByText(/does not measure thoughts, comprehension, learning, or guaranteed attendance/i)).toBeVisible();
 
   await page.getByLabel("Lecture title").fill(title);
   await page.getByLabel("Google Meet URL").fill("https://example.com/not-meet");
@@ -77,7 +80,7 @@ test("teacher can validate, create, inspect, update, and delete isolated demo le
 
   const created = page.locator("article.lecture-row").filter({ has: page.getByRole("heading", { name: title }) });
   await expect(created).toBeVisible();
-  await created.getByText("Assigned students (2)").click();
+  await created.getByText("Assigned (2 students)").click();
   await expect(created.getByText(studentEmail, { exact: true })).toBeVisible();
   await expect(created.getByText("mira@demo.local", { exact: true })).toBeVisible();
 
@@ -111,8 +114,20 @@ test("teacher can validate, create, inspect, update, and delete isolated demo le
   await page.getByRole("link", { name: "Back to dashboard" }).click();
 
   const disposable = page.locator("article.lecture-row").filter({ has: page.getByRole("heading", { name: title }) });
-  page.once("dialog", (dialog) => dialog.accept());
-  await disposable.getByRole("button", { name: "Delete" }).click();
+  const deleteButton = disposable.getByRole("button", { name: "Delete" });
+  await deleteButton.click();
+  const deleteDialog = page.getByRole("dialog", { name: `Delete “${title}”?` });
+  await expect(deleteDialog).toBeVisible();
+  await expect(deleteDialog.getByRole("button", { name: "Cancel" })).toBeFocused();
+  await deleteDialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(deleteDialog).toBeHidden();
+  await expect(deleteButton).toBeFocused();
+  await deleteButton.click();
+  await page.keyboard.press("Escape");
+  await expect(deleteDialog).toBeHidden();
+  await expect(deleteButton).toBeFocused();
+  await deleteButton.click();
+  await deleteDialog.getByRole("button", { name: "Delete lecture" }).click();
   await expect(disposable).toHaveCount(0);
   await expect(seedRow).toBeVisible();
 
@@ -125,7 +140,7 @@ test("student upload, local inference, replacement, and teacher details stay lec
 
   const lecture = page.locator("article.student-lecture").filter({ has: page.getByRole("heading", { name: seededLecture }) });
   await expect(lecture).toBeVisible();
-  await expect(lecture.getByText("active", { exact: true })).toBeVisible();
+  await expect(lecture.getByText("Active", { exact: true })).toBeVisible();
   await expect(lecture).toContainText("Dr. Asha Mehta");
   const meetLink = lecture.getByRole("link", { name: "Join Google Meet" });
   await expect(meetLink).toHaveAttribute("href", "https://meet.google.com/demo-demo-demo");
@@ -139,7 +154,7 @@ test("student upload, local inference, replacement, and teacher details stay lec
   await expect(lecture.getByText("3 samples · 60s")).toBeVisible();
   await expect(lecture.locator(".review-summary").getByText("Active participation", { exact: true }).first()).toBeVisible();
   await expect(lecture.getByLabel("Class probabilities")).toBeVisible();
-  await expect(lecture.getByText(/not evidence of real-world accuracy/i)).toBeVisible();
+  await expect(lecture.getByText(/Participation estimate based on observable browser activity/i)).toBeVisible();
   await expect(lecture).not.toContainText("active_participation");
   await expect(lecture).not.toContainText("passive_listening");
 

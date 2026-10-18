@@ -48,7 +48,6 @@ h4, h5 { font-size: 1rem; }
 .link-button { background: transparent; border: 0; color: #2448ac; padding: .4rem; margin-left: .5rem; min-height: auto; }
 .link-button:hover { background: #edf2ff; }
 .demo-banner { padding: .58rem 1rem; text-align: center; background: #ffebae; color: #553a00; font-weight: 800; letter-spacing: .03em; font-size: .84rem; }
-.model-warning { padding: .5rem 1rem; text-align: center; background: #e9eefc; color: #253f87; font-size: .86rem; }
 .page { max-width: 1240px; margin: auto; padding: 1.75rem clamp(1rem, 4vw, 3rem); }
 .page-heading { display: flex; justify-content: space-between; }
 .page-intro { color: #657087; margin: 0; }
@@ -94,7 +93,7 @@ details { margin-top: .8rem; color: #48556e; }
 summary { cursor: pointer; font-weight: 700; }
 
 .status, .submission-badge, .prediction-badge { display: inline-flex; align-items: center; width: fit-content; border-radius: 999px; padding: .25rem .6rem; font-size: .73rem; line-height: 1.35; font-weight: 800; }
-.status { background: #f0f2f6; color: #505d73; text-transform: capitalize; }
+.status { background: #f0f2f6; color: #505d73; }
 .status.active { background: #daf4e7; color: #086044; }
 .status.completed { background: #e1e9ff; color: #2448ac; }
 .submission-badge::before { content: ""; width: .42rem; height: .42rem; margin-right: .38rem; border-radius: 50%; background: currentColor; }
@@ -178,6 +177,10 @@ progress::-moz-progress-bar { background: #4566c9; border-radius: 999px; }
 .review-summary > div { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-bottom: .5rem; border-bottom: 1px solid #e1e6ef; }
 .review-summary span:first-child { color: #68748b; font-size: .82rem; }
 .warning { color: #694b0b; background: #fff7e1; border: 1px solid #f1dfaa; padding: .7rem; border-radius: 8px; }
+.prediction-description { color: #4d5b73; font-size: .86rem; }
+.prediction-description a, footer a { color: #2448ac; font-weight: 700; }
+.form-error { color: #8d2925; }
+.compact-empty { padding: 1.25rem .5rem; box-shadow: none; border: 0; }
 .privacy { margin-bottom: 1rem; border-left: 4px solid #3158cc; }
 .privacy h2 { margin-bottom: .3rem; }
 .privacy p { margin: 0; color: #56627a; }
@@ -187,7 +190,21 @@ progress::-moz-progress-bar { background: #4566c9; border-radius: 999px; }
 .hint { color: #68748b; font-size: .88rem; }
 .setup { max-width: 680px; margin: 10vh auto; padding: 2rem; }
 .setup code { background: #e8edf7; padding: .15rem .3rem; }
-footer { margin-top: 2rem; text-align: center; padding: 1.4rem; color: #657087; border-top: 1px solid #dce2eb; font-size: .86rem; }
+footer { margin-top: 2rem; text-align: center; padding: 1.4rem clamp(1rem, 4vw, 3rem); color: #657087; border-top: 1px solid #dce2eb; font-size: .86rem; display: grid; justify-items: center; gap: .35rem; }
+footer strong { color: #37445c; }
+.prediction-method { width: min(680px, 100%); margin-top: .35rem; text-align: left; border: 1px solid #d9e0ec; border-radius: 9px; background: #fff; padding: .6rem .75rem; }
+.prediction-method summary { color: #2448ac; text-align: center; }
+.prediction-method div { margin-top: .55rem; }
+.prediction-method p { margin: .35rem 0; }
+
+.confirm-dialog { width: min(480px, calc(100% - 2rem)); border: 1px solid #d9e0ec; border-radius: 14px; padding: 1.25rem; color: #172033; box-shadow: 0 24px 70px rgba(25, 37, 68, .25); }
+.confirm-dialog::backdrop { background: rgba(18, 27, 48, .55); }
+.confirm-dialog h2 { margin-bottom: .55rem; }
+.confirm-dialog p { color: #56627a; }
+.dialog-actions { display: flex; justify-content: flex-end; gap: .6rem; margin-top: 1rem; }
+button.danger.solid { background: #a73731; color: white; border-color: #a73731; }
+button.danger.solid:hover { background: #892a26; }
+button:disabled { cursor: wait; opacity: .68; }
 
 @media (max-width: 980px) {
   .stats { grid-template-columns: repeat(3, 1fr); }

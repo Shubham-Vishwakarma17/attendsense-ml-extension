@@ -14,7 +14,10 @@ export function LectureForm({ profile, onCreate }: { profile: UserProfile; onCre
         teacherId: profile.uid, teacherName: profile.name, studentEmails: parseStudentEmails(studentText),
         scheduledAt: new Date(scheduledAt).getTime(), status: "scheduled" });
       setTitle(""); setDescription(""); setMeetUrl(""); setScheduledAt(""); setStudentText(""); setMessage("Lecture created.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Could not create lecture."); }
+    } catch (error) {
+      const validationMessage = error instanceof Error && (error.message.startsWith("Use an HTTPS") || error.message.startsWith("Invalid student email")) ? error.message : "Could not create the lecture. Please try again.";
+      setMessage(validationMessage);
+    }
   }
   return <form className="card form-grid" onSubmit={submit}><h2>Create lecture</h2>
     <label>Lecture title<input value={title} onChange={(e) => setTitle(e.target.value)} required /></label>

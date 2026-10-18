@@ -94,9 +94,9 @@ export interface PlatformRepository {
   createLecture(input: Omit<Lecture, "id" | "createdAt" | "updatedAt">): Promise<Lecture>;
   updateLecture(lectureId: string, changes: Partial<Pick<Lecture, "status" | "title" | "description" | "scheduledAt" | "studentEmails">>): Promise<void>;
   deleteLecture(lectureId: string): Promise<void>;
-  subscribeTeacherLectures(teacherId: string, callback: (lectures: Lecture[]) => void): Unsubscribe;
-  subscribeStudentLectures(normalizedEmail: string, callback: (lectures: Lecture[]) => void): Unsubscribe;
-  subscribeToLectureSubmissions(lectureId: string, callback: (submissions: Submission[]) => void): Unsubscribe;
-  subscribeToStudentSubmission(lectureId: string, studentUid: string, callback: (submission: Submission | null) => void): Unsubscribe;
+  subscribeTeacherLectures(teacherId: string, callback: (lectures: Lecture[]) => void, onError?: () => void): Unsubscribe;
+  subscribeStudentLectures(normalizedEmail: string, callback: (lectures: Lecture[]) => void, onError?: () => void): Unsubscribe;
+  subscribeToLectureSubmissions(lectureId: string, callback: (submissions: Submission[]) => void, onError?: () => void): Unsubscribe;
+  subscribeToStudentSubmission(lectureId: string, studentUid: string, callback: (submission: Submission | null) => void, onError?: () => void): Unsubscribe;
   saveOwnSubmission(lectureId: string, profile: UserProfile, submission: Submission): Promise<void>;
 }

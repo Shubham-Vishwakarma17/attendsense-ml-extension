@@ -15,6 +15,13 @@ describe("Firebase configuration", () => {
     expect(firebase.firestore.rules).toBe("firestore.rules");
     expect(firebase.hosting.public).toBe("webapp/dist");
   });
+  it("uses presentation-ready browser metadata and an SVG favicon", () => {
+    const html = readFileSync(resolve(root, "webapp/index.html"), "utf8");
+    expect(html).toContain("AttendSense | Participation Analytics");
+    expect(html).toContain('rel="icon" type="image/svg+xml" href="/favicon.svg"');
+    expect(html).toContain('name="theme-color" content="#3158cc"');
+    expect(readFileSync(resolve(root, "webapp/public/favicon.svg"), "utf8")).toContain(">AS<");
+  });
   it("leaves the extension manifest permissions unchanged and narrow", () => {
     const manifest = JSON.parse(readFileSync(resolve(root, "extension/manifest.json"), "utf8"));
     expect(manifest.manifest_version).toBe(3);

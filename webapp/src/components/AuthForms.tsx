@@ -9,7 +9,7 @@ export function LoginForm() {
   async function submit(event: FormEvent) {
     event.preventDefault(); setMessage("");
     try { const profile = await repository.login(email, password); navigate(roleHome(profile.role)); }
-    catch (error) { setMessage(error instanceof Error ? error.message : "Login failed."); }
+    catch { setMessage("Could not log in. Check your email and password, then try again."); }
   }
   return <main className="auth-shell"><form className="card auth-card" onSubmit={submit}>
     <p className="eyebrow">OBSERVABLE PARTICIPATION PORTAL</p><h1>Welcome to AttendSense</h1>
@@ -17,7 +17,7 @@ export function LoginForm() {
     <label>Password<input aria-label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required /></label>
     <button type="submit">Log in</button><p role="alert">{message}</p>
     <p>New student? <Link to="/register">Create an account</Link></p>
-    {repository.mode === "demo" && <p className="hint">Teacher: teacher@demo.local · Student: student@demo.local · any password</p>}
+    {repository.mode === "demo" && <p className="hint">Demo accounts: teacher@demo.local · student@demo.local</p>}
   </form></main>;
 }
 
@@ -27,7 +27,7 @@ export function RegistrationForm() {
   async function submit(event: FormEvent) {
     event.preventDefault(); setMessage("");
     try { const profile = await repository.registerStudent(name.trim(), email.trim(), password); navigate(roleHome(profile.role)); }
-    catch (error) { setMessage(error instanceof Error ? error.message : "Registration failed."); }
+    catch { setMessage("Could not create your account. Check the details and try again."); }
   }
   return <main className="auth-shell"><form className="card auth-card" onSubmit={submit}>
     <p className="eyebrow">STUDENT REGISTRATION</p><h1>Create your account</h1>

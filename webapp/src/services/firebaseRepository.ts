@@ -70,17 +70,17 @@ export class FirebaseRepository implements PlatformRepository {
   }
   async updateLecture(id: string, changes: Partial<Lecture>) { await updateDoc(doc(this.db, "lectures", id), { ...changes, updatedAt: serverTimestamp() }); }
   async deleteLecture(id: string) { await deleteDoc(doc(this.db, "lectures", id)); }
-  subscribeTeacherLectures(teacherId: string, callback: (lectures: Lecture[]) => void) {
-    return onSnapshot(query(collection(this.db, "lectures"), where("teacherId", "==", teacherId)), (snapshot) => callback(snapshot.docs.map((item) => mapLecture(item.id, item.data()))));
+  subscribeTeacherLectures(teacherId: string, callback: (lectures: Lecture[]) => void, onError?: () => void) {
+    return onSnapshot(query(collection(this.db, "lectures"), where("teacherId", "==", teacherId)), (snapshot) => callback(snapshot.docs.map((item) => mapLecture(item.id, item.data()))), onError);
   }
-  subscribeStudentLectures(email: string, callback: (lectures: Lecture[]) => void) {
-    return onSnapshot(query(collection(this.db, "lectures"), where("studentEmails", "array-contains", email)), (snapshot) => callback(snapshot.docs.map((item) => mapLecture(item.id, item.data()))));
+  subscribeStudentLectures(email: string, callback: (lectures: Lecture[]) => void, onError?: () => void) {
+    return onSnapshot(query(collection(this.db, "lectures"), where("studentEmails", "array-contains", email)), (snapshot) => callback(snapshot.docs.map((item) => mapLecture(item.id, item.data()))), onError);
   }
-  subscribeToLectureSubmissions(lectureId: string, callback: (submissions: Submission[]) => void) {
-    return onSnapshot(collection(this.db, "lectures", lectureId, "submissions"), (snapshot) => callback(snapshot.docs.map((item) => mapSubmission(item.data()))));
+  subscribeToLectureSubmissions(lectureId: string, callback: (submissions: Submission[]) => void, onError?: () => void) {
+    return onSnapshot(collection(this.db, "lectures", lectureId, "submissions"), (snapshot) => callback(snapshot.docs.map((item) => mapSubmission(item.data()))), onError);
   }
-  subscribeToStudentSubmission(lectureId: string, studentUid: string, callback: (submission: Submission | null) => void) {
-    return onSnapshot(doc(this.db, "lectures", lectureId, "submissions", studentUid), (snapshot) => callback(snapshot.exists() ? mapSubmission(snapshot.data()) : null));
+  subscribeToStudentSubmission(lectureId: string, studentUid: string, callback: (submission: Submission | null) => void, onError?: () => void) {
+    return onSnapshot(doc(this.db, "lectures", lectureId, "submissions", studentUid), (snapshot) => callback(snapshot.exists() ? mapSubmission(snapshot.data()) : null), onError);
   }
   async saveOwnSubmission(lectureId: string, profile: UserProfile, submission: Submission) {
     if (submission.studentUid !== profile.uid || submission.studentEmail !== profile.normalizedEmail) throw new Error("Submission identity mismatch.");
