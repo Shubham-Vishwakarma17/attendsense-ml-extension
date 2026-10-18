@@ -1,0 +1,40 @@
+{
+  "exportSchemaVersion": 1,
+  "sessionId": "playwright-synthetic-session",
+  "sessionSchemaVersion": 2,
+  "startedAt": 1795000000000,
+  "stoppedAt": 1795000060000,
+  "stopReason": "user",
+  "durationSeconds": 60,
+  "participationLabel": "active_participation",
+  "sampleCount": 3,
+  "samples": [
+    {
+      "sampleIndex": 0,
+      "elapsedSeconds": 10,
+      "tabVisible": true,
+      "windowFocused": true,
+      "idleSeconds": 2,
+      "recentlyInteracted": true,
+      "facePresent": null
+    },
+    {
+      "sampleIndex": 1,
+      "elapsedSeconds": 20,
+      "tabVisible": true,
+      "windowFocused": true,
+      "idleSeconds": 5,
+      "recentlyInteracted": true,
+      "facePresent": null
+    },
+    {
+      "sampleIndex": 2,
+      "elapsedSeconds": 30,
+      "tabVisible": true,
+      "windowFocused": false,
+      "idleSeconds": 14,
+      "recentlyInteracted": false,
+      "facePresent": null
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "modelVersion": "attendsense-synthetic-logreg-v1",
+  "modelType": "multinomial_logistic_regression",
+  "datasetKind": "synthetic_demo",
+  "warning": "Synthetic demo results validate the software pipeline only. They do not measure real-world model performance.",
+  "classOrder": [
+    "active_participation",
+    "away_from_lecture",
+    "passive_listening"
+  ],
+  "featureOrder": [
+    "tabVisible",
+    "windowFocused",
+    "idleSeconds",
+    "recentlyInteracted"
+  ],
+  "idleSecondsClip": {
+    "minimum": 0,
+    "maximum": 3600.0
+  },
+  "scalerMeans": [
+    0.6555555555555556,
+    0.5888888888888889,
+    95.40251111111112,
+    0.3111111111111111
+  ],
+  "scalerScales": [
+    0.4751867728965133,
+    0.49203532945521167,
+    100.1154336037761,
+    0.4629481479111035
+  ],
+  "coefficients": [
+    [
+      0.45588872306134076,
+      0.3269242704155097,
+      -2.76409745643897,
+      0.7409923589037066
+    ],
+    [
+      -0.9159202432878264,
+      -0.6752640989211947,
+      2.277384813709648,
+      -0.693650054851729
+    ],
+    [
+      0.46003152022648486,
+      0.3483398285056846,
+      0.48671264272932063,
+      -0.04734230405197701
+    ]
+  ],
+  "intercepts": [
+    -1.0098561293107757,
+    -0.2866286270059742,
+    1.296484756316741
+  ],
+  "predictionMeaning": "observable browser participation state",
+  "scientificBoundary": "Observable participation prediction only; not proof of attention, comprehension, learning, identity, or attendance."
+}

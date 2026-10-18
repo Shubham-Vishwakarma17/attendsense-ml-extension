@@ -1,0 +1,85 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function email() { return request.auth.token.email.lower(); }
+    function userProfile() { return get(/databases/$(database)/documents/users/$(request.auth.uid)).data; }
+    function isTeacher() { return signedIn() && userProfile().role == 'teacher'; }
+    function ownsLecture(lectureId) {
+      return isTeacher() && get(/databases/$(database)/documents/lectures/$(lectureId)).data.teacherId == request.auth.uid;
+    }
+    function assignedToLecture(lectureId) {
+      return signedIn() && email() in get(/databases/$(database)/documents/lectures/$(lectureId)).data.studentEmails;
+    }
+    function validLectureStatus(status) { return status in ['scheduled', 'active', 'completed']; }
+    function validLectureDocument() {
+      return request.resource.data.keys().hasOnly(['title', 'description', 'meetUrl', 'teacherId', 'teacherName', 'studentEmails', 'scheduledAt', 'status', 'createdAt', 'updatedAt'])
+        && validLectureStatus(request.resource.data.status)
+        && request.resource.data.studentEmails is list
+        && request.resource.data.studentEmails.size() > 0
+        && request.resource.data.studentEmails.size() <= 100;
+    }
+    function validPrediction(label) { return label in ['active_participation', 'passive_listening', 'away_from_lecture']; }
+    function validStopReason(reason) { return reason in ['user', 'monitored_tab_navigated', 'monitored_tab_closed']; }
+
+    match /users/{uid} {
+      // Public registration can create only the caller's normalized student profile.
+      allow create: if signedIn() && uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'normalizedEmail', 'role', 'createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.normalizedEmail == email()
+        && request.resource.data.role == 'student';
+      allow read: if signedIn() && (uid == request.auth.uid || isTeacher());
+      // A student can edit only their name; role, UID, email, and creation time are immutable.
+      allow update: if signedIn() && uid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name']);
+      allow delete: if false;
+    }
+
+    match /lectures/{lectureId} {
+      allow create: if isTeacher()
+        && validLectureDocument()
+        && request.resource.data.teacherId == request.auth.uid
+        && request.resource.data.meetUrl.matches('https://meet\\.google\\.com/.*');
+      allow read: if signedIn() && (resource.data.teacherId == request.auth.uid || email() in resource.data.studentEmails);
+      allow update: if isTeacher() && resource.data.teacherId == request.auth.uid
+        && validLectureDocument()
+        && request.resource.data.teacherId == resource.data.teacherId
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.meetUrl == resource.data.meetUrl;
+      allow delete: if isTeacher() && resource.data.teacherId == request.auth.uid;
+
+      match /submissions/{studentUid} {
+        function allowedFields() {
+          return request.resource.data.keys().hasOnly([
+            'studentUid', 'studentName', 'studentEmail', 'sessionId', 'sessionSchemaVersion',
+            'startedAt', 'stoppedAt', 'stopReason', 'durationSeconds', 'sampleCount',
+            'tabVisiblePercent', 'windowFocusedPercent', 'recentInteractionPercent',
+            'meanIdleSeconds', 'predictedParticipationLabel', 'classProbabilities',
+            'predictionType', 'modelVersion', 'datasetKind', 'scientificBoundary',
+            'participantProvidedLabel', 'samples', 'submittedAt', 'updatedAt'
+          ]);
+        }
+        function validOwnSubmission() {
+          return studentUid == request.auth.uid
+            && request.resource.data.studentUid == request.auth.uid
+            && request.resource.data.studentEmail == email()
+            && assignedToLecture(lectureId)
+            && allowedFields()
+            && validPrediction(request.resource.data.predictedParticipationLabel)
+            && validStopReason(request.resource.data.stopReason)
+            && request.resource.data.predictionType == 'observable participation prediction'
+            && request.resource.data.datasetKind == 'synthetic_demo'
+            && request.resource.data.sampleCount == request.resource.data.samples.size()
+            && request.resource.data.samples.size() > 0
+            && request.resource.data.samples.size() <= 2160;
+        }
+        allow read: if signedIn() && (studentUid == request.auth.uid || ownsLecture(lectureId));
+        allow create, update: if signedIn() && validOwnSubmission();
+        allow delete: if signedIn() && (studentUid == request.auth.uid || ownsLecture(lectureId));
+      }
+    }
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}

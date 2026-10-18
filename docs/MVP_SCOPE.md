@@ -16,17 +16,26 @@ AttendSense estimates **observable browser participation signals** during a user
 - Automatic session stop when the monitored tab reloads, navigates, or closes.
 - Versioned session records with serialized mutations and a 2,160-sample cap (approximately six hours at the nominal ten-second interval), preserving the newest samples.
 
+## Checkpoint 3 included
+
+- React/TypeScript teacher and student portal with explicit demo and Firebase repository implementations.
+- Firebase email/password authentication, profile-based roles, protected routes, lecture assignment, and real-time submission listeners.
+- Strict local validation of explicitly selected Checkpoint 2A JSON exports.
+- Browser-side inference from a safe, coefficient-only synthetic Logistic Regression model export.
+- Teacher lecture/results views and student join, upload, review, submit, and replace workflows.
+- Restrictive Firestore Security Rules and Firebase Hosting configuration.
+
 ## Explicitly excluded
 
 - Camera, face, gaze, head-direction, microphone, photo, or video capture.
 - Raw frame storage.
-- ML training, inference, labels, predictions, or claims about attention.
-- Backend services, network uploads, identity tracking, or cross-site browsing history.
-- Instructor dashboards, grading, discipline, or automated high-impact decisions.
+- Claims about attention, learning, identity, or guaranteed attendance.
+- Cloud Functions, Firebase Storage, automatic extension activation, grading, discipline, or automated high-impact decisions.
+- Camera, microphone, raw media, Meet-page metadata, browsing history, and arbitrary upload fields.
 
 ## Privacy principles
 
-Monitoring starts only after the user chooses **Start Lecture Session**. It stops after **Stop Session** and ignores later telemetry. Data remains in `chrome.storage.local` on the user's browser. Checkpoint 1 requests only `activeTab`, `storage`, and the Google Meet host scope.
+Monitoring starts only after the user chooses **Start Lecture Session**. It stops after **Stop Session** and ignores later telemetry. Extension data remains in `chrome.storage.local` until the participant explicitly exports it. Checkpoint 1 requests only `activeTab`, `storage`, and the Google Meet host scope. In Checkpoint 3, a student explicitly chooses a JSON file; the portal validates it locally and stores only allowlisted session signals, summary values, and prediction metadata in Firestore.
 
 Tab visibility, window focus, and page interaction are coarse observable browser signals. Opening the extension popup can temporarily affect window-focus readings, and pointer movement toward the popup can affect recent-interaction readings. These signals do not prove attention or learning.
 
@@ -42,4 +51,8 @@ After a stopped session has at least one sample, the participant may assign one 
 
 The local Python workflow validates private CSV exports, prepares a deterministic dataset, compares Logistic Regression, Decision Tree, and Random Forest with session-grouped cross-validation, and performs offline prediction. Predictive features are limited to tab visibility, window focus, idle seconds, and recent interaction. The result is an observable participation-state prediction, never proof of attention, understanding, learning, or attendance. Generated data and model artifacts remain private and ignored; no backend, network upload, browser inference, or dashboard is included.
 
-An explicitly synthetic demo generator is included only to exercise the complete software pipeline before real data collection. Synthetic provenance and warnings propagate through preparation summaries, model artifacts, metrics, and predictions. Synthetic metrics do not measure real-world model performance; genuine consent-based evaluation remains future work.
+An explicitly synthetic demo generator is included only to exercise the complete software pipeline before real data collection. Synthetic provenance and warnings propagate through preparation summaries, model artifacts, metrics, predictions, and the web UI. Synthetic metrics do not measure real-world model performance; genuine consent-based evaluation remains future work.
+
+## Remaining future work
+
+Production readiness requires emulator-backed Security Rules tests, accessibility and cross-browser QA, operational monitoring, data-retention policy, consent review, and evaluation on appropriately governed real sessions. None of those gaps changes the scientific boundary.

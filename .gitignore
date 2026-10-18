@@ -8,6 +8,19 @@
 node_modules/
 coverage/
 npm-debug.log*
+webapp/node_modules/
+webapp/dist/
+webapp/.env
+webapp/.env.*
+!webapp/.env.example
+firebase-debug.log*
+*-debug.log
+
+# Firebase credentials must never be committed
+**/service-account*.json
+**/*-firebase-adminsdk-*.json
+*.pem
+*.key
 
 # Python tooling (reserved for later checkpoints)
 __pycache__/

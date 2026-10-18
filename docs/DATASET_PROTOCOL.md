@@ -28,7 +28,7 @@ At least three independent sessions per label are required for the grouped evalu
 
 ## Privacy and file handling
 
-Do not collect or add participant names, email addresses, Google Meet codes, meeting URLs, tab titles, browsing history, audio, video, photos, or camera images. Checkpoint 2A exports only allowlisted session timing, observable browser signals, and the participant-provided label. Export uses a local browser download and sends nothing to a server.
+Do not collect or add participant names, email addresses, Google Meet codes, meeting URLs, tab titles, browsing history, audio, video, photos, or camera images to dataset exports. Checkpoint 2A export itself uses a local browser download and sends nothing to a server. In the optional Checkpoint 3 workflow, the participant explicitly selects a JSON export; the portal rejects unknown fields, runs inference locally, and submits only the allowlisted signals, summary, and prediction metadata to the assigned lecture in Firestore. It does not store the original file as a blob.
 
 Dataset files must remain private and untracked. The repository ignores CSV, TSV, Parquet, JSONL, and the contents of `data/`. Store JSON exports under `data/` so they are also ignored; do not commit raw research exports.
 

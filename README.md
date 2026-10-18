@@ -1,6 +1,6 @@
 # AttendSense
 
-AttendSense is a consent-based Chrome extension mini-project for estimating **observable participation signals** during online lectures. It does not detect thoughts, learning, understanding, or actual attention. Checkpoint 1 supports Google Meet and keeps all collected data local.
+AttendSense is a consent-based system for estimating **observable participation signals** during online lectures. It does not detect thoughts, learning, understanding, or actual attention. It combines a Google Meet-scoped Chrome extension, an offline research pipeline, and a Checkpoint 3 teacher/student web demonstration.
 
 ## Checkpoint 1 behavior
 
@@ -31,6 +31,12 @@ The dependency-pinned Python pipeline in [`ml/`](ml/) validates private CSV expo
 
 For software demonstration before real collection, `ml/generate_demo_data.py` creates explicitly synthetic, identity-free exports. Demo commands must use `--dataset-kind synthetic_demo`, which propagates a warning into summaries, metrics, model metadata, and prediction output. Synthetic metrics validate pipeline execution only and are not real-world accuracy evidence.
 
+## Checkpoint 3: teacher/student web workflow
+
+[`webapp/`](webapp/) is a React, TypeScript, Vite application with Firebase Authentication and Cloud Firestore repository support. Teachers manage assigned lectures and receive real-time submission updates. Students join the teacher-provided Meet link, manually operate the extension, explicitly export a stopped session, and locally validate/upload that JSON. Browser inference uses only the four approved activity signals and a safe coefficient-only export of the synthetic Logistic Regression demo model.
+
+The website cannot start the Chrome extension. Chrome requires the student to open the extension and select **Start Lecture Session**. The original uploaded file is never stored as a blob. See [Firebase setup](docs/FIREBASE_SETUP.md) and the [demo runbook](docs/DEMO_RUNBOOK.md).
+
 ## Structure
 
 ```text
@@ -43,17 +49,24 @@ tests/      Node built-in unit tests and manifest validation
 docs/       Scope and scientific/privacy boundary
 ml/         Offline dataset preparation, grouped evaluation, training, and prediction
 data/       Private raw/processed datasets; generated contents are ignored
+webapp/     React/TypeScript teacher and student portal
+firebase.json, firestore.rules, firestore.indexes.json  Firebase configuration
 ```
 
 ## Development and verification
 
-Requires Node.js 20 or later. There are no package dependencies.
+The extension checks require Node.js 20 or later. The web app has its own pinned dependencies.
 
 ```bash
 npm test
 npm run check:syntax
 npm run check:manifest
 npm run check
+cd webapp
+npm install
+npm run typecheck
+npm test
+npm run build
 ```
 
 ## Load in Chrome
@@ -79,4 +92,7 @@ Chrome may display a site-access notice for Google Meet because the content scri
 - Only one session is retained; starting after a stopped session replaces the previous stored session.
 - Reloading, navigating, or closing the monitored Meet tab automatically stops the session; a new session must be started after the page is ready.
 - The in-memory mutation queue protects writes within one service-worker lifetime; browser termination can still interrupt an in-flight operation.
-- No camera/face or head-direction feature and no ML component exists in Checkpoint 1.
+- No camera/face or head-direction feature is implemented.
+- The browser model is trained only on synthetic demo data. Its output demonstrates workflow integration, not real-world accuracy.
+- Firebase credentials, a Firebase project, teacher provisioning, deployed rules/indexes, and hosting remain user-configured.
+- Firestore Rules require emulator/integration testing against the user's Firebase project before production use.
